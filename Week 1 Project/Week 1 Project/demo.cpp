@@ -20,51 +20,49 @@ GLint GprogramID = -1;
 
 GLFWwindow* window;
 
-
-
 static void error_callback(int error, const char* description)
 {
-  fputs(description, stderr);
+	fputs(description, stderr);
 }
 
 GLuint LoadShader(GLenum type, const char *shaderSrc )
 {
-   GLuint shader;
-   GLint compiled;
+	GLuint shader;
+	GLint compiled;
    
-   // Create the shader object
-   shader = glCreateShader ( type );
+	// Create the shader object
+	shader = glCreateShader ( type );
 
-   if ( shader == 0 )
-   	return 0;
+	if ( shader == 0 )
+	return 0;
 
-   // Load the shader source
-   glShaderSource ( shader, 1, &shaderSrc, NULL );
+	// Load the shader source
+	glShaderSource ( shader, 1, &shaderSrc, NULL );
    
-   // Compile the shader
-   glCompileShader ( shader );
+	// Compile the shader
+	glCompileShader ( shader );
 
-   // Check the compile status
-   glGetShaderiv ( shader, GL_COMPILE_STATUS, &compiled );
+	// Check the compile status
+	glGetShaderiv ( shader, GL_COMPILE_STATUS, &compiled );
 
-   if ( !compiled ) 
-   {
-      GLint infoLen = 0;
+	if ( !compiled ) 
+	{
+		GLint infoLen = 0;
 
-      glGetShaderiv ( shader, GL_INFO_LOG_LENGTH, &infoLen );
+		glGetShaderiv ( shader, GL_INFO_LOG_LENGTH, &infoLen );
       
-      if ( infoLen > 1 )
-      {
-		 char infoLog[4096];
-         glGetShaderInfoLog ( shader, infoLen, NULL, infoLog );
-         printf ( "Error compiling shader:\n%s\n", infoLog );            
-      }
+		if ( infoLen > 1 )
+		{
+			char infoLog[4096];
+			glGetShaderInfoLog ( shader, infoLen, NULL, infoLog );
+			printf ( "Error compiling shader:\n%s\n", infoLog );            
+		}
 
-      glDeleteShader ( shader );
-      return 0;
-   }
+		glDeleteShader ( shader );
+		return 0;
+	}
 
-   return shader;
+	return shader;
 }
 
 GLuint LoadShaderFromFile(GLenum shaderType, std::string path)
@@ -89,128 +87,138 @@ GLuint LoadShaderFromFile(GLenum shaderType, std::string path)
 
 int Init ( void )
 {
-   GLuint vertexShader;
-   GLuint fragmentShader;
-   GLuint programObject;
-   GLint linked;
+	GLuint vertexShader;
+	GLuint fragmentShader;
+	GLuint programObject;
+	GLint linked;
 
-   vertexShader = LoadShaderFromFile(GL_VERTEX_SHADER, "../vertexShader1.vert" );
-   fragmentShader = LoadShaderFromFile(GL_FRAGMENT_SHADER, "../fragmentShader1.frag" );
+	vertexShader = LoadShaderFromFile(GL_VERTEX_SHADER, "../vertexShader1.vert" );
+	fragmentShader = LoadShaderFromFile(GL_FRAGMENT_SHADER, "../fragmentShader1.frag" );
 
-   // Create the program object
-   programObject = glCreateProgram ( );
+	// Create the program object
+	programObject = glCreateProgram ( );
    
-   if ( programObject == 0 )
-      return 0;
+	if ( programObject == 0 )
+		return 0;
 
-   glAttachShader ( programObject, fragmentShader );
-   glAttachShader ( programObject, vertexShader );
+	glAttachShader ( programObject, fragmentShader );
+	glAttachShader ( programObject, vertexShader );
 
 
-   // Bind vPosition to attribute 0   
-   glBindAttribLocation ( programObject, 0, "vPosition" );
+	// Bind vPosition to attribute 0   
+	glBindAttribLocation ( programObject, 0, "vPosition" );
 
-   // Link the program
-   glLinkProgram ( programObject );
+	// Link the program
+	glLinkProgram ( programObject );
 
-   // Check the link status
-   glGetProgramiv ( programObject, GL_LINK_STATUS, &linked );
+	// Check the link status
+	glGetProgramiv ( programObject, GL_LINK_STATUS, &linked );
 
-   if ( !linked ) 
-   {
-      GLint infoLen = 0;
+	if ( !linked ) 
+	{
+		GLint infoLen = 0;
 
-      glGetProgramiv ( programObject, GL_INFO_LOG_LENGTH, &infoLen );
+		glGetProgramiv ( programObject, GL_INFO_LOG_LENGTH, &infoLen );
       
-      if ( infoLen > 1 )
-      {
-         //char* infoLog = malloc (sizeof(char) * infoLen );
-		 char infoLog[512];
-         glGetProgramInfoLog ( programObject, infoLen, NULL, infoLog );
-         printf ( "Error linking program:\n%s\n", infoLog );            
+		if ( infoLen > 1 )
+		{
+			//char* infoLog = malloc (sizeof(char) * infoLen );
+			char infoLog[512];
+			glGetProgramInfoLog ( programObject, infoLen, NULL, infoLog );
+			printf ( "Error linking program:\n%s\n", infoLog );            
          
-         //free ( infoLog );
-      }
+			//free ( infoLog );
+		}
 
-      glDeleteProgram ( programObject );
-      return 0;
-   }
+		glDeleteProgram ( programObject );
+		return 0;
+	}
 
-   // Store the program object
-   GprogramID = programObject;
+	// Store the program object
+	GprogramID = programObject;
 
-   glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
-   return 1;
+	glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
+	return 1;
 }
 
 void Draw(void)
 {
-   GLfloat vVertices[] = {0.0f,  0.5f, 0.0f,
-                          -0.5f, -0.5f, 0.0f,
-                          0.5f, -0.5f,  0.0f};
-		/*				  
-      GLfloat vVertices[] = {0.0f,  1.0f, 0.0f,
-                          -1.0f, -1.0f, 0.0f,
-                          1.0f, -1.0f,  0.0f};*/
+	static float factor0 = 0.0f;
+	factor0 += 0.05f;
+	GLint factor0Loc = glGetUniformLocation(GprogramID, "Factor0");
+	if (factor0Loc != -1)
+	{
+		glUniform1f(factor0Loc, factor0);
+	}
 
-   // Set the viewport
-   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+	GLfloat vVertices[] =
+		{0.0f,  0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f,  0.0f,};
 
-   // Clear the color buffer
-   glClear(GL_COLOR_BUFFER_BIT);
+	/*				  
+	GLfloat vVertices[] = {0.0f,  1.0f, 0.0f,
+						-1.0f, -1.0f, 0.0f,
+						1.0f, -1.0f,  0.0f};
+	*/
 
-   // Use the program object
-   glUseProgram(GprogramID);
+	// Set the viewport
+	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-   // Load the vertex data
-   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
-   glEnableVertexAttribArray(0);
+	// Clear the color buffer
+	glClear(GL_COLOR_BUFFER_BIT);
 
-   glDrawArrays(GL_TRIANGLES, 0, 3);
+	// Use the program object
+	glUseProgram(GprogramID);
 
+	// Load the vertex data
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
+	glEnableVertexAttribArray(0);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 int main(void)
 {
-  glfwSetErrorCallback(error_callback);
+	glfwSetErrorCallback(error_callback);
 
-  // Initialize GLFW library
-  if (!glfwInit())
-    return -1;
+	// Initialize GLFW library
+	if (!glfwInit())
+	return -1;
 
-  glfwDefaultWindowHints();
-  glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	glfwDefaultWindowHints();
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-  // Create and open a window
-  window = glfwCreateWindow(WINDOW_WIDTH,
-                            WINDOW_HEIGHT,
-                            "Shader Test",
-                            NULL,
-                            NULL);
+	// Create and open a window
+	window = glfwCreateWindow(WINDOW_WIDTH,
+							WINDOW_HEIGHT,
+							"Shader Test",
+							NULL,
+							NULL);
 
-  if (!window)
-  {
-    glfwTerminate();
-    printf("glfwCreateWindow Error\n");
-    exit(1); 
-  }
+	if (!window)
+	{
+		glfwTerminate();
+		printf("glfwCreateWindow Error\n");
+		exit(1); 
+	}
 
-  glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(window);
 
-  Init();
+	Init();
 
-  // Repeat
-  while (!glfwWindowShouldClose(window)) {
+	// Repeat
+	while (!glfwWindowShouldClose(window)) {
 
 
 	Draw();
-    glfwSwapBuffers(window);
-    glfwPollEvents();
-  }
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
 
-  glfwDestroyWindow(window);
-  glfwTerminate();
-  exit(EXIT_SUCCESS);
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	exit(EXIT_SUCCESS);
 }

@@ -5,6 +5,11 @@ float g;
 float b;
 float a;
 
+//0.66775
+//0.33225
+
+uniform float Factor0;
+
 float RadToDegree(float degree)
 {
 	float answer = degree * 3.142 / 180.0;
@@ -14,9 +19,13 @@ float RadToDegree(float degree)
 
 void main()                                 
 {
-	r = (0.66775 * cos(gl_FragCoord.x * 0.02 - 0.0) + 0.33225);
-	g = (0.66775 * cos(gl_FragCoord.x * 0.02 - 2.1) + 0.33225);
-	b = (0.66775 * cos(gl_FragCoord.x * 0.02 - 4.2) + 0.33225);
+	float number0 = 1.0/3.0;
+	float number1 = 2.0/3.0;
+
+	r = (number1 * tan((gl_FragCoord.y) * 0.02 + 0.0 + Factor0) + number0);
+	g = (number1 * tan((gl_FragCoord.y) * 0.02 + 2.1 + Factor0 * 2.0) + number0);
+	b = (number1 * tan((gl_FragCoord.y) * 0.02 + 4.2 - Factor0) + number0);
+	
 	a = 1.0;
 	
 	gl_FragColor = vec4 ( r, g, b, a );
