@@ -12,11 +12,15 @@
 #include <stdio.h>
 #include <string>
 #include <fstream> 
+#include "bitmap.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
+#define TEXTURE_COUNT 2
+
 GLint GprogramID = -1;
+GLuint GtextureID[TEXTURE_COUNT];
 
 GLFWwindow* window;
 
@@ -85,12 +89,34 @@ GLuint LoadShaderFromFile(GLenum shaderType, std::string path)
 }
 
 
+void loadTexture(const char* path, GLuint textureID)
+{
+	CBitmap bitmap(path);
+
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	// Bilinear filtering.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bitmap.GetWidth(), bitmap.GetHeight(), 0,
+	GL_RGBA, GL_UNSIGNED_BYTE, bitmap.GetBits());
+}
+
 int Init ( void )
 {
 	GLuint vertexShader;
 	GLuint fragmentShader;
 	GLuint programObject;
 	GLint linked;
+
+	// Load Textures
+	glGenTextures(TEXTURE_COUNT, GtextureID);
+	//loadTexture("../media/pattern0.bmp", GtextureID[0]);
+	//load(Texture("../media/background.bmp", GtextureID[1]);
 
 	vertexShader = LoadShaderFromFile(GL_VERTEX_SHADER, "../vertexShader1.vert" );
 	fragmentShader = LoadShaderFromFile(GL_FRAGMENT_SHADER, "../fragmentShader1.frag" );
@@ -104,9 +130,10 @@ int Init ( void )
 	glAttachShader ( programObject, fragmentShader );
 	glAttachShader ( programObject, vertexShader );
 
-
 	// Bind vPosition to attribute 0   
 	glBindAttribLocation ( programObject, 0, "vPosition" );
+	glBindAttribLocation ( programObject, 1, "vColor" );
+	glBindAttribLocation ( programObject, 2, "vTexCoord" );
 
 	// Link the program
 	glLinkProgram ( programObject );
@@ -143,24 +170,57 @@ int Init ( void )
 
 void Draw(void)
 {
+	// Set the sampler2D varying variable to the first texture unit(index 0)
+	glUniform1i(glGetUniformLocation(GprogramID, "sampler2D"), 0);
+
+	// Modify Factor0 varying variable
 	static float factor0 = 0.0f;
-	factor0 += 0.05f;
+	factor0 += sinf(0.001f);
 	GLint factor0Loc = glGetUniformLocation(GprogramID, "Factor0");
 	if (factor0Loc != -1)
 	{
 		glUniform1f(factor0Loc, factor0);
 	}
 
-	GLfloat vVertices[] =
-		{0.0f,  0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f,  0.0f,};
+	float sizeX = 1.0f;
+	float sizeY = 1.0f;
 
-	/*				  
-	GLfloat vVertices[] = {0.0f,  1.0f, 0.0f,
-						-1.0f, -1.0f, 0.0f,
-						1.0f, -1.0f,  0.0f};
-	*/
+	GLfloat vVertices[] =
+	{ 
+		-sizeX,  sizeY, 0.0f,
+		-sizeX, -sizeY, 0.0f,
+		 sizeX, -sizeY, 0.0f,
+		-sizeX,  sizeY, 0.0f,
+		 sizeX,  sizeY, 0.0f,
+		 sizeX, -sizeY, 0.0f, 
+	};
+
+	GLfloat vColors[] =
+	{ 
+		1.0f, 0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, 0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f, 1.0f, 
+	};
+
+	GLfloat vTexCoord[] =
+	{
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 1.0f,
+		1.0f, 0.0f,
+	};
+
+	/*GLfloat vVertices[] = 
+	{
+		 0.0f,  1.0f, 0.0f,
+		-1.0f, -1.0f, 0.0f,
+		 1.0f, -1.0f, 0.0f
+	};*/
 
 	// Set the viewport
 	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -173,9 +233,18 @@ void Draw(void)
 
 	// Load the vertex data
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
-	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, vColors);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, vTexCoord);
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 }
 
 int main(void)
@@ -192,11 +261,12 @@ int main(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
 	// Create and open a window
-	window = glfwCreateWindow(WINDOW_WIDTH,
-							WINDOW_HEIGHT,
-							"Shader Test",
-							NULL,
-							NULL);
+	window = 
+		glfwCreateWindow(WINDOW_WIDTH,
+		WINDOW_HEIGHT,
+		"Shader Test",
+		NULL,
+		NULL);
 
 	if (!window)
 	{
@@ -206,14 +276,12 @@ int main(void)
 	}
 
 	glfwMakeContextCurrent(window);
-
 	Init();
 
 	// Repeat
-	while (!glfwWindowShouldClose(window)) {
-
-
-	Draw();
+	while (!glfwWindowShouldClose(window)) 
+	{
+		Draw();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
