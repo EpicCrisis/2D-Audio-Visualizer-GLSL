@@ -8,10 +8,14 @@
 
 #include <GLFW/glfw3.h>
 //#include <GLFW/glfw3native.h>
+#include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
 #include <fstream> 
+#include <fmod.hpp>
+#include <fmod_errors.h>
+
 #include "bitmap.h"
 
 #define WINDOW_WIDTH 800
@@ -19,10 +23,72 @@
 
 #define TEXTURE_COUNT 2
 
+#define SPECTRUM_SIZE 128
+
 GLint GprogramID = -1;
 GLuint GtextureID[TEXTURE_COUNT];
 
 GLFWwindow* window;
+
+FMOD::System* m_fmodSystem;
+FMOD::Sound* m_music;
+FMOD::Channel* m_musicChannel;
+
+float m_spectrumLeft[SPECTRUM_SIZE];
+float m_spectrumRight[SPECTRUM_SIZE];
+
+float spectrumAverage;
+
+void ERRCHECK(FMOD_RESULT result)
+{
+	if (result != FMOD_OK)
+	{
+		printf("FMOD ERROR! (%d) %s\n", result, FMOD_ErrorString(result));
+	}
+}
+
+void InitFMOD()
+{
+	FMOD_RESULT result;
+	unsigned int version;
+
+	result = FMOD::System_Create(&m_fmodSystem);
+
+	result = m_fmodSystem->getVersion(&version);
+	ERRCHECK(result);
+
+	if (version < FMOD_VERSION)
+	{
+		printf("FMOD Error! You are using an old version of FMOD.", version, FMOD_VERSION);
+	}
+
+	//initialize fmod system
+	result = m_fmodSystem->init(32, FMOD_INIT_NORMAL, 0);
+	ERRCHECK(result);
+
+	//load and set up music
+	result = m_fmodSystem->createStream("../media/WithoutYou.mp3", FMOD_SOFTWARE, 0, &m_music);
+	ERRCHECK(result);
+
+	//play the loaded mp3 music
+	result = m_fmodSystem->playSound(FMOD_CHANNEL_FREE, m_music, false, &m_musicChannel);
+	ERRCHECK(result);
+}
+
+void UpdateFMOD()
+{
+	m_fmodSystem->update();
+
+	//set spectrum for left and right stereo channel
+	m_musicChannel->getSpectrum(m_spectrumLeft, SPECTRUM_SIZE, 0, FMOD_DSP_FFT_WINDOW_RECT);
+
+	m_musicChannel->getSpectrum(m_spectrumRight, SPECTRUM_SIZE, 0, FMOD_DSP_FFT_WINDOW_RECT);
+
+	//point the first audio spectrum for both left and right channels
+	std::cout << m_spectrumLeft[0] << ", " << m_spectrumRight[0] << std::endl;
+
+	spectrumAverage = (m_spectrumLeft[0] + m_spectrumRight[0]) / 2.0f;
+}
 
 static void error_callback(int error, const char* description)
 {
@@ -88,7 +154,6 @@ GLuint LoadShaderFromFile(GLenum shaderType, std::string path)
     return shaderID;
 }
 
-
 void loadTexture(const char* path, GLuint textureID)
 {
 	CBitmap bitmap(path);
@@ -118,8 +183,8 @@ int Init ( void )
 	//loadTexture("../media/pattern0.bmp", GtextureID[0]);
 	//load(Texture("../media/background.bmp", GtextureID[1]);
 
-	vertexShader = LoadShaderFromFile(GL_VERTEX_SHADER, "../vertexShader1.vert" );
-	fragmentShader = LoadShaderFromFile(GL_FRAGMENT_SHADER, "../fragmentShader1.frag" );
+	vertexShader = LoadShaderFromFile(GL_VERTEX_SHADER, "../vertexShader0.vert" );
+	fragmentShader = LoadShaderFromFile(GL_FRAGMENT_SHADER, "../fragmentShader0.frag" );
 
 	// Create the program object
 	programObject = glCreateProgram ( );
@@ -168,18 +233,31 @@ int Init ( void )
 	return 1;
 }
 
+// Variables For Music
+float factor0 = 0.0f;
+float factor1 = 0.0f;
+
 void Draw(void)
 {
+	UpdateFMOD();
+
 	// Set the sampler2D varying variable to the first texture unit(index 0)
 	glUniform1i(glGetUniformLocation(GprogramID, "sampler2D"), 0);
 
 	// Modify Factor0 varying variable
-	static float factor0 = 0.0f;
-	factor0 += sinf(0.001f);
+	factor0 = 0.01f + spectrumAverage;
+	factor1 += 0.02f + spectrumAverage;
+
 	GLint factor0Loc = glGetUniformLocation(GprogramID, "Factor0");
+	GLint factor1Loc = glGetUniformLocation(GprogramID, "Factor1");
+
 	if (factor0Loc != -1)
 	{
 		glUniform1f(factor0Loc, factor0);
+	}
+	if (factor1Loc != -1)
+	{
+		glUniform1f(factor1Loc, factor1);
 	}
 
 	float sizeX = 1.0f;
@@ -251,6 +329,9 @@ int main(void)
 {
 	glfwSetErrorCallback(error_callback);
 
+	// Initialize FMOD
+	InitFMOD();
+
 	// Initialize GLFW library
 	if (!glfwInit())
 	return -1;
@@ -278,7 +359,7 @@ int main(void)
 	glfwMakeContextCurrent(window);
 	Init();
 
-	// Repeat
+	// Repeat Update Function
 	while (!glfwWindowShouldClose(window)) 
 	{
 		Draw();
