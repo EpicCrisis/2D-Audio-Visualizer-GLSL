@@ -303,7 +303,7 @@ void Draw(void)
 	// Set the viewport
 	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	// Clear the color buffer
+	// Clear the colour buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Use the program object
