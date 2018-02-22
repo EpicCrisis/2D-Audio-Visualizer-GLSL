@@ -11,7 +11,7 @@ uniform float Factor1;
 
 void WavePattern()
 {
-	vec4 resultColour;
+	vec4 resultColor;
 	
 	float offsetX = 0.0 + Factor1 * 0.1;
 	float offsetY = 300.0;
@@ -26,20 +26,20 @@ void WavePattern()
 	// y = asin(fx - dx) + c;
 	if(gl_FragCoord.y >= equation0 && gl_FragCoord.y <= equation1)
 	{
-		resultColour.r = 1.0;
-		resultColour.g = Factor0 * 10.0;
-		resultColour.b = 1.0;
-		resultColour.a = 1.0;
+		resultColor.r = 1.0;
+		resultColor.g = Factor0 * 10.0;
+		resultColor.b = 1.0;
+		resultColor.a = 1.0;
 	}
 	else 
 	{
-		resultColour.r = 0.0;
-		resultColour.g = 0.0;
-		resultColour.b = 0.0;
-		resultColour.a = 1.0;
+		resultColor.r = 0.0;
+		resultColor.g = 0.0;
+		resultColor.b = 0.0;
+		resultColor.a = 1.0;
 	}
 	
-	gl_FragColor = resultColour;
+	gl_FragColor = resultColor;
 }
 	
 // Linear interpolation
@@ -55,8 +55,8 @@ float invLerp(float v0, float v1, float v)
 
 void WaveShaderPattern()
 {
-	vec4 texColour = texture2D(sampler2d, fTexCoord);
-	vec4 resultColour;
+	vec4 texColor = texture2D(sampler2d, fTexCoord);
+	vec4 resultColor;
 	
 	const float offsetX = 400.0;
 	const float offsetY = 300.0;
@@ -69,25 +69,25 @@ void WaveShaderPattern()
 	
 	if(gl_FragCoord.y >= equation0 - width && gl_FragCoord.y <= equation0 + width)
 	{
-		resultColour.r = (1.0 - abs((invLerp(equation0 - width, equation0 + width, gl_FragCoord.y) - 0.5) + 2.0));
-		resultColour.g = (1.0 - abs((invLerp(equation0 - width, equation0 + width, gl_FragCoord.y) - 0.5) + 2.0));
-		resultColour.b = (1.0 - abs((invLerp(equation0 - width, equation0 + width, gl_FragCoord.y) - 0.5) + 2.0));
-		resultColour.a = 1.0;
+		resultColor.r = (1.0 - abs((invLerp(equation0 - width, equation0 + width, gl_FragCoord.y) - 0.5) + 2.0));
+		resultColor.g = (1.0 - abs((invLerp(equation0 - width, equation0 + width, gl_FragCoord.y) - 0.5) + 2.0));
+		resultColor.b = (1.0 - abs((invLerp(equation0 - width, equation0 + width, gl_FragCoord.y) - 0.5) + 2.0));
+		resultColor.a = 1.0;
 	}
 	else 
 	{	
-		resultColour.r = 0.0;
-		resultColour.g = 0.0;
-		resultColour.b = 0.0;
-		resultColour.a = 0.0;
+		resultColor.r = 0.0;
+		resultColor.g = 0.0;
+		resultColor.b = 0.0;
+		resultColor.a = 0.0;
 	}
 	
-	gl_FragColor = texColour + resultColour;
+	gl_FragColor = texColor + resultColor;
 }
 
 void HeartPattern()
 {
-	vec4 resultColour;
+	vec4 resultColor;
 	
 	const float offsetX = 400.0;
 	const float offsetY = 300.0;
@@ -105,63 +105,70 @@ void HeartPattern()
 
 	if(heartEquation0 <= curvature)
 	{
-		resultColour.r = 1.0;
-		resultColour.g = 1.0;
-		resultColour.b = 1.0;
-		resultColour.a = 1.0;
+		resultColor.r = 1.0;
+		resultColor.g = 1.0;
+		resultColor.b = 1.0;
+		resultColor.a = 1.0;
 	}
 	else 
 	{	
-		resultColour.r = 0.0;
-		resultColour.g = 0.0;
-		resultColour.b = 0.0;
-		resultColour.a = 0.0;
+		resultColor.r = 0.0;
+		resultColor.g = 0.0;
+		resultColor.b = 0.0;
+		resultColor.a = 0.0;
 	}
 	
-	gl_FragColor = resultColour;
+	gl_FragColor = resultColor;
 }
 
 void CirclePattern()
 {
-	vec4 texColour = texture2D(sampler2d, fTexCoord);
-	vec4 combinedColour;
+	vec4 texColor = texture2D(sampler2d, fTexCoord);
+	vec4 combinedColor;
 	
-	combinedColour = texColour;
-	vec4 resultColour;
+	combinedColor = texColor;
+	vec4 resultColor;
 	
-	float r = 20.0 + Factor0 * 50.0;
+	float r0 = 20.0 + Factor0 * 50.0;
+	float r1 = 30.0 + Factor0 * 50.0;
+	
 	float ax = pow((gl_FragCoord.x - 400.0), 2.0);
 	float ay = pow((gl_FragCoord.y - 300.0), 2.0);
-	float a = ax + ay;
-	float b = r * r;
 	
-	if ( a <= b )
+	float a = ax + ay;
+	float b = r0 * r0;
+	float c = r1 * r1;
+	
+	if ( a >= b && a <= c)
 	{
-		resultColour.r = 1.0;
-		resultColour.g = 1.0;
-		resultColour.b = 1.0;
-		resultColour.a = 1.0;
+		resultColor.r = 1.0;
+		resultColor.g = 1.0;
+		resultColor.b = 1.0;
+		resultColor.a = 1.0;
 	}
 	else
 	{
-		resultColour.r = 0.0;
-		resultColour.g = 0.0;
-		resultColour.b = 0.0;
-		resultColour.a = 1.0;
+		resultColor.r = 0.0;
+		resultColor.g = 0.0;
+		resultColor.b = 0.0;
+		resultColor.a = 1.0;
 	}
 	
-	gl_FragColor = resultColour;
+	gl_FragColor = resultColor;
 }
 
 void Everything()
 {
-	vec4 resultColour;
+	vec4 resultColor;
+	vec4 texColor = texture2D(sampler2d, fTexCoord);	
+	vec4 combinedColor;
+	combinedColor = texColor;
 	
 	// For wave pattern 0
-	float offsetXWave0 = 0.0 + Factor1 * 0.1;
-	float offsetYWave0 = 300.0;
-	float frequencyWave0 = 25.0;
-	float amplitudeWave0 = 50.0 + Factor0 * 50.0;
+	float offsetXWave0 = 0.0 + Factor1 * 0.05;
+	float offsetYWave0 = 50.0;
+	float frequencyWave0 = 60.0;
+	float amplitudeWave0 = 30.0 + Factor0 * 50.0;
 	float widthWave0 = 10.0;
 	float speedWave0 = 10.0;
 	
@@ -170,9 +177,9 @@ void Everything()
 	
 	// For wave pattern 1
 	float offsetXWave1 = 0.0 - Factor1 * 0.1;
-	float offsetYWave1 = 200.0 + Factor0 * 50.0;
-	float frequencyWave1 = 25.0;
-	float amplitudeWave1 = 50.0 + Factor0 * 10.0;
+	float offsetYWave1 = 100.0 + Factor0 * 50.0;
+	float frequencyWave1 = 50.0;
+	float amplitudeWave1 = 20.0 + Factor0 * 10.0;
 	float widthWave1 = 10.0;
 	float speedWave1 = 10.0;
 	
@@ -181,53 +188,96 @@ void Everything()
 	
 	waveEquation2 = amplitudeWave1 * sin ((gl_FragCoord.x / frequencyWave1) - (offsetXWave1 * speedWave1)) + offsetYWave1 - widthWave1;
 	waveEquation3 = amplitudeWave1 * sin ((gl_FragCoord.x / frequencyWave1) - (offsetXWave1 * speedWave1)) + offsetYWave1 + widthWave1;
-	 
+	
+	// For wave pattern 2
+	float offsetXWave2 = 0.0 + Factor1 * 0.15;
+	float offsetYWave2 = 150.0 + Factor0 * 50.0;
+	float frequencyWave2 = 40.0;
+	float amplitudeWave2 = 10.0 + Factor0 * 10.0;
+	float widthWave2 = 10.0;
+	float speedWave2 = 10.0;
+	
+	float waveEquation4;
+	float waveEquation5;
+	
+	waveEquation4 = amplitudeWave1 * sin ((gl_FragCoord.x / frequencyWave2) - (offsetXWave2 * speedWave2)) + offsetYWave2 - widthWave2;
+	waveEquation5 = amplitudeWave1 * sin ((gl_FragCoord.x / frequencyWave2) - (offsetXWave2 * speedWave2)) + offsetYWave2 + widthWave2;
+	
 	// For heart pattern 0
-	float offsetXHeart0 = 400.0;
-	float offsetYHeart0 = 300.0;
-	float frequencyHeart0 = 50.0;
-	float amplitudeHeart0 = 50.0;
-	float widthHeart0 = 40.0;
+	float offsetXHeart0 = 680.0;
+	float offsetYHeart0 = 465.0;
 	float speedHeart0 = Factor0 + 10.0;
 	
-	float minSizeHeart0 = 50.0;
-	float maxSizeHeart0 = 100.0;
+	float minSizeHeart0 = 20.0;
+	float maxSizeHeart0 = Factor0 * 10.0 + 30.0;
 	float curvatureHeart0 = 3.0;
 	
 	float dSize = (maxSizeHeart0 - minSizeHeart0) * abs(sin(speedHeart0)) + minSizeHeart0;
 	float heartEquation0 = pow((gl_FragCoord.x - offsetXHeart0) / dSize, 2.0) + pow(((gl_FragCoord.y - offsetYHeart0) / dSize) - sqrt(abs((gl_FragCoord.x - offsetXHeart0) / dSize)), 2.0);
-		
+	
+	// For circle pattern 0
+	float r0 = 65.0 + Factor0 * 50.0;
+	float r1 = 70.0 + Factor0 * 50.0;
+	float circleCoordX = 680.0;
+	float circleCoordY = 465.0 + 14.5;
+	
+	float ax = pow((gl_FragCoord.x - circleCoordX), 2.0);
+	float ay = pow((gl_FragCoord.y - circleCoordY), 2.0);
+	
+	float a = ax + ay;
+	float b = r0 * r0;
+	float c = r1 * r1;
+	
+	// Random squares pattern
+	float square = abs(tan(gl_FragCoord.x * 0.2 + gl_FragCoord.y * 0.2));
+	
+	resultColor.r = square;
+	
 	// y = asin(fx - dx) + c;
-	if(gl_FragCoord.y >= waveEquation0 && gl_FragCoord.y <= waveEquation1)
+	if(gl_FragCoord.y >= 0.0 && gl_FragCoord.y <= waveEquation1)
 	{
-		resultColour.r = 1.0;
-		resultColour.g = 0.8 - Factor0 * 10.0;
-		resultColour.b = 1.0;
-		resultColour.a = 1.0;
-	}
-	else if(gl_FragCoord.y >= waveEquation2 && gl_FragCoord.y <= waveEquation3)
-	{
-		resultColour.r = 1.0;
-		resultColour.g = 0.8 - Factor0 * 10.0;
-		resultColour.b = 1.0;
-		resultColour.a = 1.0;
+		resultColor.r = ((2.0 / 3.0) * sin((gl_FragCoord.y) * 0.02 + 0.0 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.g = ((2.0 / 3.0) * sin((gl_FragCoord.y) * 0.02 + 2.1 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.b = ((2.0 / 3.0) * sin((gl_FragCoord.y) * 0.02 + 4.2 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.a = 1.0;                                             
+	}                                                                    
+	else if(gl_FragCoord.y >= 0.0 && gl_FragCoord.y <= waveEquation3)    
+	{                                                                    
+		resultColor.r = ((2.0 / 3.0) * sin((gl_FragCoord.y) * 0.02 + 2.1 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.g = ((2.0 / 3.0) * sin((gl_FragCoord.y) * 0.02 + 4.2 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.b = ((2.0 / 3.0) * sin((gl_FragCoord.y) * 0.02 + 0.0 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.a = 1.0;                                             
+	}                                                                    
+	else if(gl_FragCoord.y >= 0.0 && gl_FragCoord.y <= waveEquation5)    
+	{                                                                    
+		resultColor.r = ((2.0 / 3.0) * sin((gl_FragCoord.y) * 0.02 + 4.2 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.g = ((2.0 / 3.0) * sin((gl_FragCoord.y) * 0.02 + 0.0 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.b = ((2.0 / 3.0) * sin((gl_FragCoord.y) * 0.02 + 2.1 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.a = 1.0;
 	}
 	else if(heartEquation0 <= curvatureHeart0)
 	{
-		resultColour.r = 1.0;
-		resultColour.g = 0.8 - Factor0 * 10.0;
-		resultColour.b = 0.8 - Factor0 * 10.0;
-		resultColour.a = 1.0;
+		resultColor.r = 1.0;
+		resultColor.g = 0.8 - Factor0;
+		resultColor.b = 0.8 - Factor0;
+		resultColor.a = 1.0;
+	}
+	else if(a >= b && a <= c)
+	{
+		resultColor.r = 1.0;
+		resultColor.g = 1.0;
+		resultColor.b = 1.0;
+		resultColor.a = 1.0;
 	}
 	else 
 	{	
-		resultColour.r = 0.0;
-		resultColour.g = 0.0;
-		resultColour.b = 0.0;
-		resultColour.a = 0.0;
+		resultColor.r = sin(gl_FragCoord.y * Factor0 * 0.0025) * sin(gl_FragCoord.x * Factor0 * 0.0025);
+		resultColor.g = 0.0;                               
+		resultColor.b = sin(gl_FragCoord.y * Factor0 * 0.0025) * sin(gl_FragCoord.x * Factor0 * 0.0025);
+		resultColor.a = 0.0;
 	}
 	
-	gl_FragColor = resultColour;
+	gl_FragColor = resultColor;
 }
 
 void main()                                 
@@ -235,8 +285,8 @@ void main()
 	//WaveShaderPattern();
 	//HeartPattern();
 	//WavePattern();
-	CirclePattern();
-	//Everything();
+	//CirclePattern();
+	Everything();
 }
 
 
