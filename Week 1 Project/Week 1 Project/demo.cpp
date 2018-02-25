@@ -67,7 +67,7 @@ void InitFMOD()
 	ERRCHECK(result);
 
 	//load and set up music
-	result = m_fmodSystem->createStream("../media/WithoutYou.mp3", FMOD_SOFTWARE, 0, &m_music);
+	result = m_fmodSystem->createStream("../media/HotlineMiami.mp3", FMOD_SOFTWARE, 0, &m_music);
 	ERRCHECK(result);
 
 	//play the loaded mp3 music
@@ -236,10 +236,15 @@ int Init ( void )
 // Variables For Music
 float factor0 = 0.0f;
 float factor1 = 0.0f;
+float factor2 = 0.0f;
+
+float rot0 = 0.0f;
 
 void Draw(void)
 {
 	UpdateFMOD();
+
+	rot0 += 0.02f + (spectrumAverage * 0.1f);
 
 	// Set the sampler2D varying variable to the first texture unit(index 0)
 	glUniform1i(glGetUniformLocation(GprogramID, "sampler2D"), 0);
@@ -247,9 +252,11 @@ void Draw(void)
 	// Modify Factor0 varying variable
 	factor0 = 0.01f + spectrumAverage;
 	factor1 += 0.02f + spectrumAverage;
+	factor2 = 2.0f * sinf(rot0);
 
 	GLint factor0Loc = glGetUniformLocation(GprogramID, "Factor0");
 	GLint factor1Loc = glGetUniformLocation(GprogramID, "Factor1");
+	GLint factor2Loc = glGetUniformLocation(GprogramID, "Factor2");
 
 	if (factor0Loc != -1)
 	{
@@ -258,6 +265,10 @@ void Draw(void)
 	if (factor1Loc != -1)
 	{
 		glUniform1f(factor1Loc, factor1);
+	}
+	if (factor2Loc != -1)
+	{
+		glUniform1f(factor2Loc, factor2);
 	}
 
 	float sizeX = 1.0f;

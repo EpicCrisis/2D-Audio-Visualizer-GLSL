@@ -6,6 +6,7 @@ varying vec2 fTexCoord;
 uniform sampler2D sampler2d;
 uniform float Factor0;
 uniform float Factor1;
+uniform float Factor2;
 
 //0.66775, 0.33225
 
@@ -165,10 +166,10 @@ void Everything()
 	combinedColor = texColor;
 	
 	// For wave pattern 0
-	float offsetXWave0 = 0.0 + Factor1 * 0.05;
-	float offsetYWave0 = 50.0;
+	float offsetXWave0 = 0.0 + Factor1 * 0.04;
+	float offsetYWave0 = 50.0 + Factor0 * 30.0;;
 	float frequencyWave0 = 60.0;
-	float amplitudeWave0 = 30.0 + Factor0 * 50.0;
+	float amplitudeWave0 = 30.0 + Factor0 * 9.0;
 	float widthWave0 = 10.0;
 	float speedWave0 = 10.0;
 	
@@ -176,10 +177,10 @@ void Everything()
 	float waveEquation1 = amplitudeWave0 * sin ((gl_FragCoord.x / frequencyWave0) - (offsetXWave0 * speedWave0)) + offsetYWave0 + widthWave0;
 	
 	// For wave pattern 1
-	float offsetXWave1 = 0.0 - Factor1 * 0.1;
-	float offsetYWave1 = 100.0 + Factor0 * 50.0;
+	float offsetXWave1 = 0.0 - Factor1 * 0.08;
+	float offsetYWave1 = 100.0 + Factor0 * 20.0;
 	float frequencyWave1 = 50.0;
-	float amplitudeWave1 = 20.0 + Factor0 * 10.0;
+	float amplitudeWave1 = 20.0 + Factor0 * 6.0;
 	float widthWave1 = 10.0;
 	float speedWave1 = 10.0;
 	
@@ -190,10 +191,10 @@ void Everything()
 	waveEquation3 = amplitudeWave1 * sin ((gl_FragCoord.x / frequencyWave1) - (offsetXWave1 * speedWave1)) + offsetYWave1 + widthWave1;
 	
 	// For wave pattern 2
-	float offsetXWave2 = 0.0 + Factor1 * 0.15;
-	float offsetYWave2 = 150.0 + Factor0 * 50.0;
+	float offsetXWave2 = 0.0 + Factor1 * 0.12;
+	float offsetYWave2 = 150.0 + Factor0 * 10.0;
 	float frequencyWave2 = 40.0;
-	float amplitudeWave2 = 10.0 + Factor0 * 10.0;
+	float amplitudeWave2 = 10.0 + Factor0 * 3.0;
 	float widthWave2 = 10.0;
 	float speedWave2 = 10.0;
 	
@@ -206,20 +207,20 @@ void Everything()
 	// For heart pattern 0
 	float offsetXHeart0 = 680.0;
 	float offsetYHeart0 = 465.0;
-	float speedHeart0 = Factor0 + 10.0;
+	float speedHeart0 = 10.0;
 	
 	float minSizeHeart0 = 20.0;
-	float maxSizeHeart0 = Factor0 * 10.0 + 30.0;
+	float maxSizeHeart0 = 30.0 + Factor0 * 25.0;
 	float curvatureHeart0 = 3.0;
 	
 	float dSize = (maxSizeHeart0 - minSizeHeart0) * abs(sin(speedHeart0)) + minSizeHeart0;
 	float heartEquation0 = pow((gl_FragCoord.x - offsetXHeart0) / dSize, 2.0) + pow(((gl_FragCoord.y - offsetYHeart0) / dSize) - sqrt(abs((gl_FragCoord.x - offsetXHeart0) / dSize)), 2.0);
 	
 	// For circle pattern 0
-	float r0 = 65.0 + Factor0 * 50.0;
-	float r1 = 70.0 + Factor0 * 50.0;
-	float circleCoordX = 680.0;
-	float circleCoordY = 465.0 + 14.5;
+	float r0 = 65.0 + Factor0 * 20.0;
+	float r1 = 70.0 + Factor0 * 20.0;
+	float circleCoordX = 680.0 + Factor2 * 10.0;
+	float circleCoordY = 465.0 + 14.5 + Factor2 * 10.0;
 	
 	float ax = pow((gl_FragCoord.x - circleCoordX), 2.0);
 	float ay = pow((gl_FragCoord.y - circleCoordY), 2.0);
@@ -230,6 +231,10 @@ void Everything()
 	
 	// Random squares pattern
 	float square = abs(tan(gl_FragCoord.x * 0.2 + gl_FragCoord.y * 0.2));
+	
+	// Vertical bar pattern
+	float barPosX0 = 300.0 + Factor2 * 100.0;
+	float barWidth0 = 10.0 + Factor0 * 20.0;
 	
 	resultColor.r = square;
 	
@@ -263,6 +268,13 @@ void Everything()
 		resultColor.a = 1.0;
 	}
 	else if(a >= b && a <= c)
+	{
+		resultColor.r = 0.8 - Factor0;
+		resultColor.g = 0.8 - Factor0;
+		resultColor.b = 1.0;
+		resultColor.a = 1.0;
+	}
+	else if(gl_FragCoord.x >= barPosX0 - barWidth0 && gl_FragCoord.x <= barPosX0 + barWidth0)
 	{
 		resultColor.r = 1.0;
 		resultColor.g = 1.0;
