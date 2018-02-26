@@ -237,14 +237,27 @@ int Init ( void )
 float factor0 = 0.0f;
 float factor1 = 0.0f;
 float factor2 = 0.0f;
+float factor3 = 0.0f;
 
 float rot0 = 0.0f;
+float rot1 = 0.0f;
+
+float circle0 = 0.0f;
+float circle1 = 0.0f;
+float circleRot0 = 0.0f;
+
+const float PI = 3.142f;
 
 void Draw(void)
 {
 	UpdateFMOD();
 
-	rot0 += 0.02f + (spectrumAverage * 0.1f);
+	rot0 += 0.002f + (spectrumAverage * 0.05f);
+	rot1 = 3.0f * sinf(rot0);
+
+	circle0 += 0.1f;
+	circle1 += 0.1f;
+	circleRot0 = sinf(circle0) + sinf(circle1);
 
 	// Set the sampler2D varying variable to the first texture unit(index 0)
 	glUniform1i(glGetUniformLocation(GprogramID, "sampler2D"), 0);
@@ -252,11 +265,13 @@ void Draw(void)
 	// Modify Factor0 varying variable
 	factor0 = 0.01f + spectrumAverage;
 	factor1 += 0.02f + spectrumAverage;
-	factor2 = 2.0f * sinf(rot0);
+	factor2 = 2.0f * sinf(rot1);
+	factor3 = sinf(circleRot0);
 
 	GLint factor0Loc = glGetUniformLocation(GprogramID, "Factor0");
 	GLint factor1Loc = glGetUniformLocation(GprogramID, "Factor1");
 	GLint factor2Loc = glGetUniformLocation(GprogramID, "Factor2");
+	GLint factor3Loc = glGetUniformLocation(GprogramID, "Factor3");
 
 	if (factor0Loc != -1)
 	{
@@ -270,6 +285,11 @@ void Draw(void)
 	{
 		glUniform1f(factor2Loc, factor2);
 	}
+	if (factor3Loc != -1)
+	{
+		glUniform1f(factor3Loc, factor3);
+	}
+
 
 	float sizeX = 1.0f;
 	float sizeY = 1.0f;
