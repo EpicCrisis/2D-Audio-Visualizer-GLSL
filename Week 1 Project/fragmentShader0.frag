@@ -8,6 +8,7 @@ uniform float Factor0;
 uniform float Factor1;
 uniform float Factor2;
 uniform float Factor3;
+uniform float Factor4;
 
 //0.66775, 0.33225
 
@@ -161,10 +162,10 @@ void CirclePattern()
 
 void Everything()
 {
-	vec4 resultColor;
 	vec4 texColor = texture2D(sampler2d, fTexCoord);	
-	vec4 combinedColor;
-	combinedColor = texColor;
+	vec4 resultColor;
+	//vec4 combinedColor;
+	//combinedColor = texColor;
 	
 	// For wave pattern 0, bottom wave
 	float offsetXWave0 = 0.0 + Factor1 * 0.04;
@@ -234,8 +235,8 @@ void Everything()
 	// For circle pattern 0, circle guarding heart
 	float r0 = 65.0 + Factor0 * 20.0;
 	float r1 = 70.0 + Factor0 * 20.0;
-	float circleCoord0X = 680.0;
-	float circleCoord0Y = 465.0 + 14.5;
+	float circleCoord0X = 680.0 - Factor3 * 10.0;
+	float circleCoord0Y = 465.0 + 14.5 + Factor2 * 5.0;
 	
 	float ax0 = pow((gl_FragCoord.x - circleCoord0X), 2.0);
 	float ay0 = pow((gl_FragCoord.y - circleCoord0Y), 2.0);
@@ -247,8 +248,8 @@ void Everything()
 	// For circle pattern 1, eye
 	float r2 = 15.0 + Factor0 * 10.0;
 	float r3 = 20.0 + Factor0 * 10.0;
-	float circleCoord1X = 540.0;
-	float circleCoord1Y = 465.0 - Factor2 * 10.0;
+	float circleCoord1X = 540.0 + Factor3 * 10.0;
+	float circleCoord1Y = 465.0 + Factor4 * 10.0;
 	
 	float ax1 = pow((gl_FragCoord.x - circleCoord1X), 2.0);
 	float ay1 = pow((gl_FragCoord.y - circleCoord1Y), 2.0);
@@ -278,10 +279,10 @@ void Everything()
 	float barWidth0 = 10.0 + Factor0 * 20.0;
 	
 	// Tongue pattern
-	float tonguePosX0 = 666.0;
-	float tonguePosY0 = 350.0 - Factor0 * 20.0;
+	float tonguePosX0 = 666.0 + Factor3 * 10.0 + Factor4 * 10.0;
+	float tonguePosY0 = 350.0 - Factor0 * 20.0 - Factor2 * 10.0;
 	float tongueWidth0 = 100.0;
-	float tongueThickness0 = 40.0;
+	float tongueThickness0 = 50.0 - Factor2 * 10.0;
 	float tongueEquation0 = (((gl_FragCoord.x - tonguePosX0) * (gl_FragCoord.x - tonguePosX0)) / tongueThickness0) + tonguePosY0;
 	
 	resultColor.r = square;
@@ -315,7 +316,14 @@ void Everything()
 		resultColor.b = 0.4 - Factor0;
 		resultColor.a = 1.0;
 	}
-	else if(heartEquation0 <= curvatureHeart0) // Heart
+	else if(heartEquation0 <= curvatureHeart0 && heartEquation0 >= curvatureHeart0 / 2.0) // Heart outer
+	{
+		resultColor.r = (1.0 -  abs((invLerp(curvatureHeart0 / 2.0, curvatureHeart0, heartEquation0))));
+		resultColor.g = (0.8 -  abs((invLerp(curvatureHeart0 / 2.0, curvatureHeart0, heartEquation0)))) - Factor0;
+		resultColor.b = (0.8 -  abs((invLerp(curvatureHeart0 / 2.0, curvatureHeart0, heartEquation0)))) - Factor0;
+		resultColor.a = 1.0;
+	}
+	else if(heartEquation0 < curvatureHeart0 / 2.0) // Heart inner
 	{
 		resultColor.r = 1.0;
 		resultColor.g = 0.8 - Factor0;
@@ -345,27 +353,28 @@ void Everything()
 	}
 	else if(gl_FragCoord.x >= barPosX0 - barWidth0 && gl_FragCoord.x <= barPosX0 + barWidth0) // Vertical bar
 	{
-		resultColor.r = ((2.0 / 3.0) * tan((gl_FragCoord.y - gl_FragCoord.x) * -0.02 + 4.2 + Factor1 * 0.1) + (1.0 / 3.0));
-		resultColor.g = ((2.0 / 3.0) * tan((gl_FragCoord.y - gl_FragCoord.x) * -0.02 + 0.0 + Factor1 * 0.1) + (1.0 / 3.0));
-		resultColor.b = ((2.0 / 3.0) * tan((gl_FragCoord.y - gl_FragCoord.x) * -0.02 + 2.1 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.r = ((2.0 / 3.0) * tan((gl_FragCoord.y - gl_FragCoord.x) * 0.02 + 4.2 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.g = ((2.0 / 3.0) * tan((gl_FragCoord.y - gl_FragCoord.x) * 0.02 + 0.0 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.b = ((2.0 / 3.0) * tan((gl_FragCoord.y - gl_FragCoord.x) * 0.02 + 2.1 + Factor1 * 0.1) + (1.0 / 3.0));
 		resultColor.a = 1.0;
 	}
 	else if(gl_FragCoord.y >= tongueEquation0 - tongueWidth0 && gl_FragCoord.y <= tongueEquation0 + tongueWidth0 && gl_FragCoord.y <= waveEquation7) // Tongue
 	{
-		resultColor.r = 0.8 - Factor0;
-		resultColor.g = 1.0;
-		resultColor.b = 0.8 - Factor0;
+		resultColor.r = ((2.0 / 3.0) * sin((gl_FragCoord.x) * 0.005 + 4.2 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.g = ((2.0 / 3.0) * sin((gl_FragCoord.x) * 0.005 + 0.0 + Factor1 * 0.1) + (1.0 / 3.0));
+		resultColor.b = ((2.0 / 3.0) * sin((gl_FragCoord.x) * 0.005 + 2.1 + Factor1 * 0.1) + (1.0 / 3.0));
 		resultColor.a = 1.0;
 	}
 	else // Random corner light
 	{	
-		resultColor.r = sin(gl_FragCoord.y * Factor0 * 0.0025) * sin(gl_FragCoord.x * Factor0 * 0.0025);
-		resultColor.g = 0.0;                               
-		resultColor.b = sin(gl_FragCoord.y * Factor0 * 0.0025) * sin(gl_FragCoord.x * Factor0 * 0.0025);
+		resultColor.r = ((2.0 / 3.0) * sin(gl_FragCoord.y * 0.02 + 0.0 + Factor0 * 0.0018) + (1.0 / 3.0)) * sin(gl_FragCoord.x * Factor0 * 0.0018);
+		resultColor.g = (sin(gl_FragCoord.y * 0.05 + Factor1) * sin(gl_FragCoord.x * 0.1)) - 0.8 + (Factor0 * 0.3);                                                                           
+		resultColor.b = sin(gl_FragCoord.y * Factor0 * 0.0018) * sin(gl_FragCoord.x * Factor0 * 0.0018);
 		resultColor.a = 0.0;
 	}
 	
-	gl_FragColor = resultColor;
+	gl_FragColor = texColor + resultColor;
+	//gl_FragColor = texture2D(sampler2d, fTexCoord);
 }
 
 void main()                                 

@@ -84,10 +84,10 @@ void UpdateFMOD()
 
 	m_musicChannel->getSpectrum(m_spectrumRight, SPECTRUM_SIZE, 0, FMOD_DSP_FFT_WINDOW_RECT);
 
+	spectrumAverage = (m_spectrumLeft[0] + m_spectrumRight[0]) / 2.0f;
+
 	//point the first audio spectrum for both left and right channels
 	std::cout << m_spectrumLeft[0] << ", " << m_spectrumRight[0] << std::endl;
-
-	spectrumAverage = (m_spectrumLeft[0] + m_spectrumRight[0]) / 2.0f;
 }
 
 static void error_callback(int error, const char* description)
@@ -180,8 +180,8 @@ int Init ( void )
 
 	// Load Textures
 	glGenTextures(TEXTURE_COUNT, GtextureID);
-	//loadTexture("../media/pattern0.bmp", GtextureID[0]);
-	//load(Texture("../media/background.bmp", GtextureID[1]);
+	loadTexture("../media/stars.bmp", GtextureID[0]);
+	//load(Texture("../media/DarkRainbow.bmp", GtextureID[1]);
 
 	vertexShader = LoadShaderFromFile(GL_VERTEX_SHADER, "../vertexShader0.vert" );
 	fragmentShader = LoadShaderFromFile(GL_FRAGMENT_SHADER, "../fragmentShader0.frag" );
@@ -238,12 +238,15 @@ float factor0 = 0.0f;
 float factor1 = 0.0f;
 float factor2 = 0.0f;
 float factor3 = 0.0f;
+float factor4 = 0.0f;
 
 float rot0 = 0.0f;
 float rot1 = 0.0f;
 
-float circle0 = 0.0f;
-float circle1 = 0.0f;
+float circleX0 = 0.0f;
+float circleY0 = 0.0f;
+float move0 = 0.0f;
+float move1 = 0.0f;
 float circleRot0 = 0.0f;
 
 const float PI = 3.142f;
@@ -255,9 +258,11 @@ void Draw(void)
 	rot0 += 0.002f + (spectrumAverage * 0.05f);
 	rot1 = 3.0f * sinf(rot0);
 
-	circle0 += 0.1f;
-	circle1 += 0.1f;
-	circleRot0 = sinf(circle0) + sinf(circle1);
+	move0 += 0.003f + (spectrumAverage * 0.05f);
+	move1 += 0.003f + (spectrumAverage * 0.05f);
+	circleX0 = 2.0f * cos(move0 * PI);
+	circleY0 = 2.0f * sin(move1 * PI);
+	circleRot0 = circleX0 + circleY0;
 
 	// Set the sampler2D varying variable to the first texture unit(index 0)
 	glUniform1i(glGetUniformLocation(GprogramID, "sampler2D"), 0);
@@ -266,12 +271,14 @@ void Draw(void)
 	factor0 = 0.01f + spectrumAverage;
 	factor1 += 0.02f + spectrumAverage;
 	factor2 = 2.0f * sinf(rot1);
-	factor3 = sinf(circleRot0);
+	factor3 = sinf(circleX0);
+	factor4 = sinf(circleY0);
 
 	GLint factor0Loc = glGetUniformLocation(GprogramID, "Factor0");
 	GLint factor1Loc = glGetUniformLocation(GprogramID, "Factor1");
 	GLint factor2Loc = glGetUniformLocation(GprogramID, "Factor2");
 	GLint factor3Loc = glGetUniformLocation(GprogramID, "Factor3");
+	GLint factor4Loc = glGetUniformLocation(GprogramID, "Factor4");
 
 	if (factor0Loc != -1)
 	{
@@ -289,7 +296,10 @@ void Draw(void)
 	{
 		glUniform1f(factor3Loc, factor3);
 	}
-
+	if (factor4Loc != -1)
+	{
+		glUniform1f(factor4Loc, factor4);
+	}
 
 	float sizeX = 1.0f;
 	float sizeY = 1.0f;
