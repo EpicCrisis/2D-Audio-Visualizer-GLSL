@@ -260,9 +260,9 @@ void Everything()
 	float offsetYHeart0 = 465.0;
 	float speedHeart0 = 10.0;
 	
-	float minSizeHeart0 = 20.0;
-	float maxSizeHeart0 = 30.0 + Factor0 * 25.0;
-	float curvatureHeart0 = 3.0;
+	float minSizeHeart0 = 20.0 + Factor3 * 5.0;
+	float maxSizeHeart0 = 30.0 + Factor0 * 25.0 + Factor4 * 5.0;
+	float curvatureHeart0 = 3.0;               
 	
 	float dSize = (maxSizeHeart0 - minSizeHeart0) * abs(sin(speedHeart0)) + minSizeHeart0;
 	float heartEquation0 = pow((gl_FragCoord.x - offsetXHeart0) / dSize, 2.0) + pow(((gl_FragCoord.y - offsetYHeart0) / dSize) - sqrt(abs((gl_FragCoord.x - offsetXHeart0) / dSize)), 2.0);
@@ -391,16 +391,23 @@ void Everything()
 	}
 	else if(a0 >= b0 && a0 <= c0) // Circle guarding heart
 	{
-		resultColor.r = 0.8 - Factor0;
-		resultColor.g = 0.8 - Factor0;
+		resultColor.r = 0.6 - Factor0;
+		resultColor.g = 0.6 - Factor0;
 		resultColor.b = 1.0;
 		resultColor.a = 1.0;
 	}
-	else if(a1 <= c1) // Eye
+	else if(a1 <= c1 && a1 >= c1 / 4.0) // Eye outer
+	{
+		resultColor.r = abs((invLerp(c1 / 2.0 , c1 / 4.0, a1))) + Factor0;
+		resultColor.g = abs((invLerp(c1 / 2.0 , c1 / 4.0, a1))) + Factor0;
+		resultColor.b = 1.0;
+		resultColor.a = 1.0;
+	}
+	else if(a1 < c1 / 4.0) // Eye inner
 	{
 		resultColor.r = 1.0;
-		resultColor.g = 1.0;
-		resultColor.b = 0.8 - Factor0;
+		resultColor.g = 0.6 - Factor0;
+		resultColor.b = 1.0;
 		resultColor.a = 1.0;
 	}
 	else if(a2 >= b2 && a2 <= c2) // Outside eye
