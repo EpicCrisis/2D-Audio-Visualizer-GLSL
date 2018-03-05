@@ -242,8 +242,8 @@ void Everything()
 	// For wave pattern 4, DNA wave
 	float offsetXWave4 = 350.0 + Factor2 * 10.0;
 	float offsetXWave4Other = 350.0 + 15.0 + Factor2 * 10.0;
-	float offsetYWave4 = 300.0;
-	float offsetYWave4Other = 300.0 + 59.7;
+	float offsetYWave4 = 300.0 + Factor5;
+	float offsetYWave4Other = 300.0 + 59.7 - Factor5;
 	float frequencyWave4 = 20.0;
 	float amplitudeWave4 = 10.0;
 	float widthWave4 = 5.0 + Factor0 * 10.0;
@@ -268,8 +268,8 @@ void Everything()
 	float heartEquation0 = pow((gl_FragCoord.x - offsetXHeart0) / dSize, 2.0) + pow(((gl_FragCoord.y - offsetYHeart0) / dSize) - sqrt(abs((gl_FragCoord.x - offsetXHeart0) / dSize)), 2.0);
 	
 	// For circle pattern 0, circle guarding heart
-	float rInner0 = 65.0 + Factor0 * 20.0;
-	float rOuter0 = 70.0 + Factor0 * 25.0;
+	float rInner0 = 65.0 + Factor0 * 20.0 - 5.0 * sin(Factor3);
+	float rOuter0 = 70.0 + Factor0 * 25.0 - 5.0 * sin(Factor3);
 	float circleCoord0X = 680.0 - Factor3 * 10.0;
 	float circleCoord0Y = 465.0 + 14.5 + Factor2 * 5.0;
 	
@@ -281,8 +281,8 @@ void Everything()
 	float c0 = rOuter0 * rOuter0;
 	
 	// For circle pattern 1, eye
-	float rInner1 = 15.0 + Factor0 * 10.0;
-	float rOuter1 = 20.0 + Factor0 * 10.0;
+	float rInner1 = 25.0 + Factor0 * 10.0;
+	float rOuter1 = 30.0 + Factor0 * 10.0;
 	float circleCoord1X = 540.0 + Factor3 * 10.0;
 	float circleCoord1Y = 465.0 + Factor4 * 10.0;
 	
@@ -307,8 +307,8 @@ void Everything()
 	float c2 = rOuter2 * rOuter2;
 	
 	// For circle pattern 3, sun circle
-	float rInner3 = 50.0 + Factor0 * 50.0;
-	float rOuter3 = 65.0 + Factor0 * 50.0;
+	float rInner3 = 50.0 + Factor0 * 50.0 + 10.0 * sin(Factor0);
+	float rOuter3 = 65.0 + Factor0 * 50.0 + 10.0 * sin(Factor0);
 	float circleCoord3X = 400.0 + Factor5 * 130.0;
 	float circleCoord3Y = 200.0 + Factor6 * 130.0;
 	
@@ -435,7 +435,7 @@ void Everything()
 	{
 		resultColor.r = abs((invLerp(c3, c3 / 3.0, a3)));
 		resultColor.g = abs((invLerp(c3, c3 / 3.0, a3)));
-		resultColor.b = 0.4;
+		resultColor.b = 0.4 + abs((invLerp(c3, c3 / 3.0, a3)));
 		resultColor.a = 0.0;
 	}
 	else if(a3 < c3 / 3.0) // Sun circle 1 inner
