@@ -234,20 +234,28 @@ int Init ( void )
 }
 
 // Variables For Music
-float factor0 = 0.0f;
-float factor1 = 0.0f;
-float factor2 = 0.0f;
-float factor3 = 0.0f;
-float factor4 = 0.0f;
+float factor0 = 0.0f; //Spectrum motion
+float factor1 = 0.0f; //Flowing motion
+float factor2 = 0.0f; //Slow bounce motion
+float factor3 = 0.0f; //Bounce2 motion X
+float factor4 = 0.0f; //Bounce2 motion Y
+float factor5 = 0.0f; //Circular motion 0
+float factor6 = 0.0f; //Circular motion 1
 
 float rot0 = 0.0f;
 float rot1 = 0.0f;
 
 float circleX0 = 0.0f;
 float circleY0 = 0.0f;
-float move0 = 0.0f;
-float move1 = 0.0f;
+float moveX0 = 0.0f;
+float moveY0 = 0.0f;
 float circleRot0 = 0.0f;
+
+float circleX1 = 0.0f;
+float circleY1 = 0.0f;
+float moveX1 = 0.0f;
+float moveY1 = 0.0f;
+float circleRot1 = 0.0f;
 
 const float PI = 3.142f;
 
@@ -258,11 +266,17 @@ void Draw(void)
 	rot0 += 0.002f + (spectrumAverage * 0.05f);
 	rot1 = 3.0f * sinf(rot0);
 
-	move0 += 0.003f + (spectrumAverage * 0.05f);
-	move1 += 0.003f + (spectrumAverage * 0.05f);
-	circleX0 = 2.0f * cos(move0 * PI);
-	circleY0 = 2.0f * sin(move1 * PI);
+	moveX0 += 0.003f + (spectrumAverage * 0.05f);
+	moveY0 += 0.003f + (spectrumAverage * 0.05f);
+	circleX0 = 2.0f * cos(moveX0 * PI);
+	circleY0 = 2.0f * sin(moveY0 * PI);
 	circleRot0 = circleX0 + circleY0;
+
+	moveX1 += 0.001f + (spectrumAverage * 0.01f);
+	moveY1 += 0.001f + (spectrumAverage * 0.01f);
+	circleX1 = 2.0f * cos(moveX1 * PI);
+	circleY1 = 2.0f * sin(moveY1 * PI);
+	circleRot1 = circleX1 + circleY1;
 
 	// Set the sampler2D varying variable to the first texture unit(index 0)
 	glUniform1i(glGetUniformLocation(GprogramID, "sampler2D"), 0);
@@ -273,12 +287,16 @@ void Draw(void)
 	factor2 = 2.0f * sinf(rot1);
 	factor3 = sinf(circleX0);
 	factor4 = sinf(circleY0);
+	factor5 = circleX1;
+	factor6 = circleY1;
 
 	GLint factor0Loc = glGetUniformLocation(GprogramID, "Factor0");
 	GLint factor1Loc = glGetUniformLocation(GprogramID, "Factor1");
 	GLint factor2Loc = glGetUniformLocation(GprogramID, "Factor2");
 	GLint factor3Loc = glGetUniformLocation(GprogramID, "Factor3");
 	GLint factor4Loc = glGetUniformLocation(GprogramID, "Factor4");
+	GLint factor5Loc = glGetUniformLocation(GprogramID, "Factor5");
+	GLint factor6Loc = glGetUniformLocation(GprogramID, "Factor6");
 
 	if (factor0Loc != -1)
 	{
@@ -299,6 +317,14 @@ void Draw(void)
 	if (factor4Loc != -1)
 	{
 		glUniform1f(factor4Loc, factor4);
+	}
+	if (factor5Loc != -1)
+	{
+		glUniform1f(factor5Loc, factor5);
+	}
+	if (factor6Loc != -1)
+	{
+		glUniform1f(factor6Loc, factor6);
 	}
 
 	float sizeX = 1.0f;
