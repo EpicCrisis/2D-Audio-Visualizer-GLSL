@@ -88,13 +88,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 5\Graphics Programming\FmodEx\api\inc;C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 6\3D Game Programming\Week 1\3D Game Programming\gles2-starter-win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FmodEx\api\inc;$(SolutionDir)gles2-starter-win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>glfw3dll.lib;libegl.lib;libglesv2.lib;fmodex_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 5\Graphics Programming\FmodEx\api\lib;C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 6\3D Game Programming\Week 1\3D Game Programming\gles2-starter-win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)FmodEx\api\lib;$(SolutionDir)gles2-starter-win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -103,13 +103,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 5\Graphics Programming\FmodEx\api\inc;C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 6\3D Game Programming\Week 1\3D Game Programming\gles2-starter-win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FmodEx\api\inc;$(SolutionDir)gles2-starter-win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>glfw3dll.lib;libegl.lib;libglesv2.lib;fmodex_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 5\Graphics Programming\FmodEx\api\lib;C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 6\3D Game Programming\Week 1\3D Game Programming\gles2-starter-win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)FmodEx\api\lib;$(SolutionDir)gles2-starter-win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -120,7 +120,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 5\Graphics Programming\FmodEx\api\inc;C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 6\3D Game Programming\Week 1\3D Game Programming\gles2-starter-win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FmodEx\api\inc;$(SolutionDir)gles2-starter-win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -128,7 +128,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>glfw3dll.lib;libegl.lib;libglesv2.lib;fmodex_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 5\Graphics Programming\FmodEx\api\lib;C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 6\3D Game Programming\Week 1\3D Game Programming\gles2-starter-win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)FmodEx\api\lib;$(SolutionDir)gles2-starter-win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,7 +139,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 5\Graphics Programming\FmodEx\api\inc;C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 6\3D Game Programming\Week 1\3D Game Programming\gles2-starter-win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)FmodEx\api\inc;$(SolutionDir)gles2-starter-win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -147,7 +147,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>glfw3dll.lib;libegl.lib;libglesv2.lib;fmodex_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 5\Graphics Programming\FmodEx\api\lib;C:\Users\User\Desktop\The Ultimate Folder\KDU College\Semester 6\3D Game Programming\Week 1\3D Game Programming\gles2-starter-win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)FmodEx\api\lib;$(SolutionDir)gles2-starter-win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
